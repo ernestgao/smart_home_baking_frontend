@@ -1,0 +1,36 @@
+.image {
+	width: 300px;
+	position: relative;
+	top: 150px;
+	left: 600px;
+}
+
+.login-form {
+	position: relative;
+	top: 180px;
+	left: 600px;
+}
+
+.frame1 {
+	width: 290px;
+	height: 30px;
+}
+
+.login-button {
+	width: 290px;
+	height: 30px;
+	position: absolute;
+	top: 40px;
+	background-color: #FFC300;
+	border-color: #FFC300;
+	border-radius: 5px;
+}
+
+.manage-button {
+	position: relative;
+	top: 350px;
+	left: 725px;
+	background-color: #FFC300;
+	border-color: #FFC300;
+	border-radius: 20px;
+}
