@@ -1,36 +1,120 @@
+body {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100vh;
+	/* 将整个页面的高度设置为100%视口高度 */
+	background-color: #f0f0f0;
+}
+
 .image {
-	width: 300px;
+	display: block;
+	margin: 0 auto;
+	width: 50%;
+	max-width: 300px;
 	position: relative;
-	top: 150px;
-	left: 600px;
+	top: 50px;
 }
 
 .login-form {
+	width: 80%;
+	/* 宽度设为屏幕的80% */
+	max-width: 300px;
+	/* 最大宽度 */
+	margin: 20px auto;
+	/* 居中表单，并设置上下间距 */
+	padding: 20px;
 	position: relative;
-	top: 180px;
-	left: 600px;
+	top: 80px;
+	/* 调整距离顶部的高度 */
+	background-color: #f9f9f9;
+	/* 为表单添加背景色 */
+	border-radius: 10px;
+	/* 圆角 */
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	/* 添加阴影 */
 }
 
 .frame1 {
-	width: 290px;
-	height: 30px;
+	width: 100%;
+	/* 输入框宽度设为100% */
+	padding: 10px;
+	/* 添加内边距 */
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	/* 设置浅灰色边框 */
 }
 
 .login-button {
-	width: 290px;
-	height: 30px;
-	position: absolute;
-	top: 40px;
+	width: 100%;
+	/* 按钮宽度设为100% */
+	padding: 10px;
+	/* 添加内边距 */
+	margin-top: 20px;
 	background-color: #FFC300;
 	border-color: #FFC300;
 	border-radius: 5px;
+	cursor: pointer;
+	/* 添加鼠标悬停效果 */
+	transition: background-color 0.3s;
+	/* 添加背景色变化过渡 */
+}
+
+.login-button:hover {
+	background-color: #FFA500;
+	/* 鼠标悬停时改变背景色 */
 }
 
 .manage-button {
-	position: relative;
-	top: 350px;
-	left: 725px;
+	display: block;
+	/* 将按钮转换为块级元素 */
+	width: 50%;
+	/* 宽度设为50% */
+	max-width: 70px;
+	/* 最大宽度 */
+	margin: 140px auto 0 auto;
+	/* 居中按钮，距顶部40px */
+	padding: 10px;
 	background-color: #FFC300;
 	border-color: #FFC300;
 	border-radius: 20px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+
+}
+
+.manage-button:hover {
+	background-color: #FFA500;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+	.image {
+		top: 30px;
+	}
+
+	.login-form {
+		top: 50px;
+	}
+}
+
+@media (max-width: 480px) {
+	.image {
+		width: 70%;
+		/* 在小屏幕上扩大图片宽度 */
+	}
+
+	.login-form {
+		width: 90%;
+		/* 在小屏幕上扩大表单宽度 */
+		top: 30px;
+	}
+
+	.manage-button {
+		width: 70%;
+		/* 在小屏幕上扩大按钮宽度 */
+	}
 }
