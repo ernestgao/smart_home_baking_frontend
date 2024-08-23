@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "../styles/loginPage.css";
 import loginLogo from "../assets/loginlogo.png";
+import { useNavigate } from "react-router-dom";
 
 const LogInPage = () => {
   const url = "https://really-touching-gull.ngrok-free.app";
-  const [inputUser, setInputUser] = useState(null);
+  const navigate = useNavigate();
+  const [inputUser, setInputUser] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,38 +14,47 @@ const LogInPage = () => {
     setInputUser(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleManage = (e) => {
+    e.preventDefault();
+    navigate("/manage");
+  }
+  const handleRe = (e) => {
+    e.preventDefault();
+    navigate("/planning");
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (inputUser) {
-      let logUrl = url + "/login/" + inputUser;
-      const fetchData = async () => {
-        try {
-          const response = await fetch(logUrl, {
-            headers: new Headers({
-              "ngrok-skip-browser-warning": "69420",
-            }),
-          });
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-        } catch (error) {
-          setError(error.message);
-          console.log("error fetch:", error);
-        } finally {
-          setLoading(false);
+      let logUrl = url + `/login/${inputUser}`;
+      try {
+        console.log(inputUser);
+        const response = await fetch(logUrl, {
+          headers: new Headers({
+            "ngrok-skip-browser-warning": "69420",
+          }),
+        });
+        console.log("Response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      };
-      fetchData();
+        navigate("/planning");
+      } catch (error) {
+        setError(error.message);
+        console.log("error fetch:", error);
+      } finally {
+        setLoading(false);
+      }
     } else {
       alert("请输入用户编号");
     }
   };
+
   return (
-    <body>
+    <div>
       <img className="image" src={loginLogo} alt="logo" />
-      <form class="login-form" onSubmit={handleSubmit}>
-        <div class="input-group">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <div className="input-group">
           <input
             type="number"
             id="uid"
@@ -54,12 +65,13 @@ const LogInPage = () => {
             required
           />
         </div>
-        <button type="submit" class="login-button">
+        <button type="submit" className="login-button">
           开始测试
         </button>
       </form>
-      <button class="manage-button">管理</button>
-    </body>
+      <button className="manage-button" onClick={handleManage}>管理</button>
+      <button className="suibianbutton" onClick={handleRe}>跳</button>
+    </div>
   );
 };
 
