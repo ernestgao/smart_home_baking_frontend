@@ -18,6 +18,10 @@ const LogInPage = () => {
     e.preventDefault();
     navigate("/manage");
   }
+  const handleRe = (e) => {
+    e.preventDefault();
+    navigate("/planning");
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +70,7 @@ const LogInPage = () => {
         </button>
       </form>
       <button className="manage-button" onClick={handleManage}>管理</button>
+      <button className="suibianbutton" onClick={handleRe}>跳</button>
     </div>
   );
 };

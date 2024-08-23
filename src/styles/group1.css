@@ -70,6 +70,7 @@
 	border-bottom: solid 1px #d9d9d9;
 	position: relative;
 	left: 5px;
+	top: 40px;
 }
 
 .section_2 {
@@ -114,6 +115,9 @@
 .text_3 {
 	margin-top: 24px;
 	line-height: 19px;
+	position: relative;
+	top: 20px;
+	left: 10px;
 }
 
 .section_3 {
@@ -128,6 +132,8 @@
 	border-bottom: solid 1px #d9d9d9;
 	height: 80%;
 	width: 100%;
+	position: relative;
+	top: 13px;
 }
 
 .image1 {
@@ -182,7 +188,7 @@
 .image8 {
 	position: relative;
 	right: 340px;
-	top: 65px;
+	top: 43px;
 	cursor: pointer;
 }
 
@@ -378,12 +384,17 @@
 
 .text_23 {
 	line-height: 19px;
+	position: relative;
+	top: -13px;
+	left: 15px;
 }
 
 .text_24 {
 	margin-right: 186px;
 	line-height: 19px;
 	position: relative;
+	top: -13px;
+
 }
 
 .section_5 {
@@ -400,6 +411,8 @@
 	/* 取消自动扩展 */
 	width: 850px;
 	/* 设置固定宽度 */
+	position: relative;
+	top: -20px;
 }
 
 .text_25 {
@@ -430,13 +443,14 @@
 	border-right: solid 1px #d9d9d9;
 	border-top: solid 1px #d9d9d9;
 	border-bottom: solid 1px #d9d9d9;
-
+	position: relative;
+	top: -20px;
 }
 
 .section_7 {
 	position: relative;
 	left: 600px;
-	top: -65px;
+	top: -25px;
 	margin-bottom: -75px;
 }
 
