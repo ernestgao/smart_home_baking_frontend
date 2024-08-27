@@ -1,6 +1,7 @@
 import LogInPage from "./components/loginPage";
 import ManagementPage from "./components/managementPage";
 import FirstPage from "./components/group1";
+import ThirdPage from "./components/group3";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -16,6 +17,9 @@ function App() {
 
           {/* Route to First Page */}
           <Route path="/planning" element={<FirstPage />} />
+
+          {/* Route to Third Page */}
+          <Route path="/evaluate" element={<ThirdPage />} />
         </Routes>
       </div>
     </Router>

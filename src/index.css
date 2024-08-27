@@ -535,3 +535,11 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number'] {
     -moz-appearance: textfield;
 }
+
+.yellow-button {
+	background-color: #FFC300;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}

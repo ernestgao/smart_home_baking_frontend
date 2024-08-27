@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../styles/group1.css";
-import logo from "../assets/BaKing.png";
-import adjustIcon from "../assets/调整食谱深.png";
-import assistIcon from "../assets/辅助烘焙浅.png";
-import evaluateIcon from "../assets/成果评价浅.png";
-import finishIcon from "../assets/完成.png";
-import helpIcon from "../assets/帮助.png";
-import resetIcon from "../assets/初始食谱.png";
-import defaultProduct from "../assets/实验A-3-1.png";
+import "../styles/group1.scss";
+import logo from "../assets/group1/BaKing.png";
+import adjustIcon from "../assets/group1/调整食谱深.png";
+import assistIcon from "../assets/group1/辅助烘焙浅.png";
+import evaluateIcon from "../assets/group1/成果评价浅.png";
+import finishIcon from "../assets/group1/完成.png";
+import helpIcon from "../assets/group1/帮助.png";
+import resetIcon from "../assets/group1/初始食谱.png";
+import defaultProduct from "../assets/group1/实验A-3-1.png";
 
 const Group1 = () => {
   const url = "https://really-touching-gull.ngrok-free.app";
@@ -208,6 +208,7 @@ const Group1 = () => {
   };
 
   return (
+    <div className="my-container1">
     <div className="flex-col page">
       <div className="flex-col">
         <div className="flex-row justify-end items-center self-start section">
@@ -245,7 +246,7 @@ const Group1 = () => {
                 <span className="font_3 text_4">黄油</span>
                 <div className="selector_1">
                   <div>
-                    <button onClick={handleOilDecrement}>-</button>
+                    <button onClick={handleOilDecrement} className="yellow-button">-</button>
                     <input
                       type="number"
                       id="quantity1"
@@ -253,13 +254,13 @@ const Group1 = () => {
                       value={inputOil}
                       onChange={handleOilChange}
                     />
-                    <button onClick={handleOilIncrement}>+</button>
+                    <button onClick={handleOilIncrement} className="yellow-button">+</button>
                   </div>
                 </div>
                 <span className="mt-24 font_6 text_9">细砂糖</span>
                 <div className="selector_2">
                   <div>
-                    <button onClick={handleSugarDecrement}>-</button>
+                    <button onClick={handleSugarDecrement} className="yellow-button">-</button>
                     <input
                       type="number"
                       id="quantity2"
@@ -267,7 +268,7 @@ const Group1 = () => {
                       value={inputSugar}
                       onChange={handleSugarChange}
                     />
-                    <button onClick={handleSugarIncrement}>+</button>
+                    <button onClick={handleSugarIncrement} className="yellow-button">+</button>
                   </div>
                 </div>
                 <span className="mt-24 font_6 text_31">蛋白液</span>
@@ -401,6 +402,7 @@ const Group1 = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
