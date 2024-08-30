@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/group3.scss";
+import "../styles/group3PopUp.scss";
 import logo from "../assets/group3/BaKing.png";
 import adjustIcon from "../assets/group3/调整食谱浅.png";
 import assistIcon from "../assets/group3/辅助烘焙浅.png";
 import evaluateIcon from "../assets/group3/成果评价深.png";
-import finishIcon from "../assets/group3/完成.png";
+import saveIcon from "../assets/group3/保存.jpg";
 import finishIconSmall from "../assets/group3/完成小.png";
+import addCommentIcon from "../assets/group3/添加备注.jpg";
 import helpIcon from "../assets/group3/帮助.png";
 import defaultProduct from "../assets/group3/实验A-3-1.png";
 import photoIcon from "../assets/group3/拍照记录.png";
-import editIcon from "../assets/group3/编辑小标.png"
+import editIcon from "../assets/group3/编辑小标.png";
+import commentIcon from "../assets/group3/显示标注.jpg";
 
 const Group3 = () => {
   const url = "https://really-touching-gull.ngrok-free.app";
@@ -126,6 +129,83 @@ const Group3 = () => {
     setOutputCalorie(extractedCalorie);
   };
 
+  // Buttons logic
+  const [isEditing, setIsEditing] = useState(false);
+  const handleCommentClick = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const instructions = [
+    "软化黄油，在黄油中加入细砂糖，搅打至黄油微微发白，得到糖油混合物。",
+    "在糖油混合物中加入蛋白液，搅打至完全乳化，得到混合物（A）。",
+    "切碎蔓越莓干，将蔓越莓干碎加入低筋面粉，充分搅拌，得到混合物（B）。",
+    "将（A）和（B）充分混合得到面团，将面团放入铺有保鲜膜的模具塑形。",
+    "将塑形后的面团放到冰箱中冷冻30分钟，面团变硬后取出，切成约0.5厘米的薄片。",
+    "烤箱预热，上火160度，下火150度，烘烤约20分钟后取出，静置冷却。"
+  ];
+
+  const InstructionsList = ({ isEditing, openPopup }) => (
+    
+      <div className="flex-col items-start flex-1 relative section_6">
+        {instructions.map((instruction, index) => (
+          <span key={index} className={`font_3 mt-23 text_25`}>
+            {isEditing && (
+              <img
+                className="image9"
+                src={editIcon}
+                alt=""
+                onClick={() => openPopup(index)}
+              />
+            )}
+            {instruction}
+          </span>
+        ))}
+      </div>
+  );
+
+  const [selectedStep, setSelectedStep] = useState(null);
+  const [comment, setComment] = useState('');
+
+  const Popup = ({ step, onClose, onSave }) => (
+    <div className="my-popup">
+      <div className="popup">
+        <div className="popup-content">
+          <h2>为步骤{step + 1}添加备注</h2>
+          <p>{instructions[step]}</p>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="请输入备注内容..."
+          ></textarea>
+          <div className="popup-buttons">
+            <button className="save-button" onClick={()=>onSave(comment)}>保存</button>
+            <button className="cancel-button" onClick={onClose}>取消</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    );
+
+const openPopup = (index) => {
+  setSelectedStep(index);
+};
+
+
+const closePopup = () => {
+  setSelectedStep(null);
+};
+
+const saveComment = (comment) => {
+  console.log(`Comment saved for step ${selectedStep}:`, comment);
+  closePopup();
+};
+
+//camera
+const [isCameraOn, setIsCameraOn] = useState(false);
+const [capturedPhoto, setCapturedPhoto] = useState(null);
+const videoRef = useRef(null);
+const canvasRef = useRef(null);
+
   return (
     <div className="my-container3">
     <div className="flex-col page">
@@ -142,7 +222,7 @@ const Group3 = () => {
         <img className="image3" src={adjustIcon} alt="" />
         <img className="image4" src={assistIcon} alt="" />
         <img className="image5" src={evaluateIcon} alt="" />
-        <img className="image6" src={finishIcon} alt="" />
+        <img className="image6" src={saveIcon} alt="" />
         <img className="image7" src={helpIcon} alt="" />
       </div>
     </div>
@@ -320,41 +400,24 @@ const Group3 = () => {
   <div className="mt-30 flex-col">
     <div className="flex-row justify-between">
       <span className="font_2 text_23">制作步骤</span>
-      <img className="image10" src={finishIconSmall} alt="" />
+      {isEditing ? 
+      <img className="image10" src={finishIconSmall}  alt="" onClick={handleCommentClick}/> : <img className="image11" src={addCommentIcon}  alt="" onClick={handleCommentClick}/>}
       <span className="font_2 text_24">实际热量</span>
     </div>
     <div className="flex-row mt-15">
-      <div className="flex-col items-start flex-1 relative section_6">
-        <span className="font_3 text_25">
-          <img className="image9" src={editIcon} alt="" />
-          软化黄油，在黄油中加入细砂糖，搅打至黄油微微发白，得到糖油混合物。
-        </span>
-        <span className="font_3 text_26 mt-23">
-          <img className="image9" src={editIcon} alt="" />
-          在糖油混合物中加入蛋白液，搅打至完全乳化，得到混合物（A）。
-        </span>
-        <span className="font_3 text_28 mt-23">
-          <img className="image9" src={editIcon} alt="" />
-          切碎蔓越莓干，将蔓越莓干碎加入低筋面粉，充分搅拌，得到混合物（B）。
-        </span>
-        <span className="font_3 text_29 mt-23">
-          <img className="image9" src={editIcon} alt="" />
-          将（A）和（B）充分混合得到面团，将面团放入铺有保鲜膜的模具塑形。
-        </span>
-        <span className="font_3 mt-23">
-          <img className="image9" src={editIcon} alt="" />
-          将塑形后的面团放到冰箱中冷冻30分钟，面团变硬后取出，切成约0.5厘米的薄片。
-        </span>
-        <span className="font_3 mt-23">
-          <img className="image9" src={editIcon} alt="" />
-          烤箱预热，上火160度，下火150度，烘烤约20分钟后取出，静置冷却。
-        </span>
-      </div>
-      <div className="flex-col items-center shrink-0 section_7 ml-19">
+    <InstructionsList isEditing={isEditing} openPopup={openPopup} />
+    {selectedStep !== null && (
+        <Popup
+          step={selectedStep}
+          onClose={closePopup}
+          onSave={saveComment}
+        />
+      )}
+    <div className="flex-col items-center shrink-0 section_7 ml-19">
         <span className="text_27">{caloriePerGram}</span>
         <span className="font_3 text_30 mt-31">卡路里/100克</span>
       </div>
-    </div>
+      </div>
   </div>
 </div>
 </div>

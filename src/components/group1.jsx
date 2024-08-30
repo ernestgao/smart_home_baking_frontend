@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/group1.scss";
 import logo from "../assets/group1/BaKing.png";
 import adjustIcon from "../assets/group1/调整食谱深.png";
@@ -187,6 +188,12 @@ const Group1 = () => {
     fetchData();
   };
 
+  const navigate = useNavigate();
+  const handleEvaluate = (e) => {
+    e.preventDefault();
+    navigate("/manage");
+  }
+
   const getResults = (results) => {
     let result = results.result;
     const extractedAmount = result.amount;
@@ -221,7 +228,7 @@ const Group1 = () => {
         <div className="section_7">
           <img className="image3" src={adjustIcon} alt="" />
           <img className="image4" src={assistIcon} alt="" />
-          <img className="image5" src={evaluateIcon} alt="" />
+          <img className="image5" src={evaluateIcon} alt="" onClick={handleEvaluate}/>
           <img className="image6" src={finishIcon} alt="" />
           <img className="image7" src={helpIcon} alt="" />
           <button

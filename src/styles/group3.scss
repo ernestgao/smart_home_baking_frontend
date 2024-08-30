@@ -212,7 +212,7 @@
 
 .image9 {
 	position: relative;
-	top: 5px;
+	vertical-align: middle;
 }
 
 .image10 {
@@ -220,6 +220,13 @@
 	position: relative;
 	top: -23px;
 	left: 370px;
+}
+
+.image11 {
+	margin-bottom: -53px;
+	position: relative;
+	top: -23px;
+	left: 330px;
 }
 
 .section_4 {
@@ -420,19 +427,6 @@
 }
 
 .text_25 {
-	margin-left: 0.25rem;
-	line-height: 1.17rem;
-}
-
-.text_26 {
-	line-height: 1.17rem;
-}
-
-.text_28 {
-	line-height: 1.17rem;
-}
-
-.text_29 {
 	line-height: 1.17rem;
 }
 
@@ -449,18 +443,6 @@
 	border-bottom: solid 0.063rem #d9d9d9;
 	position: relative;
 	left: 130px;
-}
-
-.text_27 {
-	color: #3b3b3b;
-	font-size: 4.38rem;
-	font-family: Roboto;
-	font-weight: 900;
-	line-height: 3.2rem;
-}
-
-.text_30 {
-	line-height: 1.15rem;
 }
 
 .slidecontainer1 {

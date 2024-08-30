@@ -1,0 +1,590 @@
+.my-container2 {
+    .page {
+        padding: 0.75rem 1.25rem 0.5rem;
+        background-color: #252525;
+        border-radius: 0.63rem;
+        box-shadow: 0rem 0.31rem 1.25rem #b5af9826;
+        height: 3.75rem;
+        border-left: solid 0.063rem #d9d9d9;
+        border-right: solid 0.063rem #d9d9d9;
+        border-top: solid 0.063rem #d9d9d9;
+        border-bottom: solid 0.063rem #d9d9d9;
+        width: 360px;
+        position: relative;
+        left: 10px;
+    }
+    
+    .image1 {
+        position: relative;
+        left: -8px;
+    }
+    
+    .section {
+        margin-right: 20px;
+        background-color: #d9d9d9;
+        width: 0.5px;
+        height: 32px;
+    }
+    
+    .font {
+        font-size: 20px;
+        font-family: PingFang TC;
+        line-height: 18.5px;
+        color: #ffffff;
+    }
+    
+    .text {
+        margin-right: 18px;
+        margin-top: 8px;
+    }
+    
+    .text_2 {
+        margin-top: 8px;
+        line-height: 18.5px;
+    }
+    
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin: 20px;
+        position: relative;
+        top: -35px;
+        left: -580px;
+    }
+    
+    .text-container {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        position: relative;
+        top: 19px;
+        left: -60px;
+    }
+    
+    .text-box1 {
+        padding: 10px;
+        border: 1px solid white;
+        font-size: 16px;
+        width: 78px;
+        text-align: center;
+        position: relative;
+        left: 1px;
+    }
+    
+    .text-box2 {
+        padding: 10px;
+        border: 5px solid #FFC300;
+        font-size: 18px;
+        width: 330px;
+        text-align: left;
+        border-radius: 10px;
+        height: 100px;
+    }
+    
+    .button {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 1px solid #ccc;
+        background-color: #FFC300;
+        font-size: 20px;
+        line-height: 22px;
+        text-align: center;
+        cursor: pointer;
+    }
+    
+    .button:hover {
+        background-color: #F3D097;
+    }
+    
+    .page2 {
+        position: relative;
+        left: 600px;
+        top: -265px;
+    }
+    
+    .image2 {
+        margin-right: -30px;
+    }
+    
+    .image3 {
+        margin-right: -30px;
+    }
+    
+    .image4 {
+        margin-right: -30px;
+    }
+    
+    .image5 {
+        margin-right: -30px;
+        position: relative;
+        top: -5px;
+    }
+    
+    /* 称量组 */
+    .container-1 {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        overflow: hidden;
+        position: relative;
+        top: -126px;
+        left: 10px;
+    }
+    
+    .tab-header {
+        display: flex;
+        background-color: #f4f4f4;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tab-header div {
+        flex: 1;
+        text-align: center;
+        padding: 15px 0;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        position: relative;
+    }
+    
+    .tab-header div.active {
+        font-weight: bold;
+        color: black;
+    }
+    
+    .tab-header div.active::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background-color: #FFC107;
+        border-radius: 2px;
+    }
+    
+    .content {
+        display: none;
+        padding: 20px;
+    }
+    
+    .content.active {
+        display: block;
+    }
+    
+    //食品称样式
+    .food-scale {
+        text-align: center;
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+    
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .text1 {
+        position: relative;
+        right: 105px;
+    }
+    
+    //按钮样式
+    .controls button {
+        background-color: #ffc107;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .button1 {
+        background-color: #ffc107;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .button2 {
+        background-color: #ffc107;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        position: relative;
+        right: 208px;
+    }
+    
+    //图片样式
+    .image-container {
+        margin-bottom: 10px;
+    }
+    
+    .image-container img {
+        max-width: 100%;
+        border-radius: 10px;
+    }
+    
+    .image7 {
+        position: relative;
+        top: -25px;
+        left: 225px;
+    }
+    
+    //数字样式
+    .numbers {
+        margin-top: 10px;
+    }
+    
+    .numbers .large {
+        font-size: 48px;
+        font-weight: bold;
+        position: relative;
+        top: -75px;
+    }
+    
+    .numbers .small {
+        font-size: 18px;
+        color: #888;
+        position: relative;
+        top: -75px;
+    }
+    
+    /* 进度条 */
+    
+    .container-4 {
+        position: relative;
+        top: -70px;
+    }
+    
+    /* */
+    /* Container for the progress bar */
+    .progress-container {
+        width: 100%;
+        max-width: 400px;
+        height: 50px;
+        position: relative;
+        margin: -10px auto;
+        background-color: #ccc;
+        clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    
+    /* The track of the progress bar */
+    .progress-bar {
+        width: 50%;
+        /* Starting progress */
+        height: 100%;
+        background-color: #f1c40f;
+        position: absolute;
+        top: 0;
+        left: 0;
+        clip-path: polygon(0 100%, 100% 0, 100% 100%, 0% 100%);
+        transition: width 0.1s ease;
+        /* Smooth transition */
+    }
+    
+    /* 食品称量显示 */
+    .container-3 {
+        width: 215%;
+        margin: -25px auto;
+        font-family: Arial, sans-serif;
+        position: relative;
+        left: -250px;
+        top: -20px;
+    }
+    
+    .table {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+        align-items: center;
+    }
+    
+    .table div {
+        padding: 2px 0;
+        gap: 10px;
+    }
+    
+    .header-1 {
+        font-weight: bold;
+        text-align: left;
+        font-size: 14px;
+        margin-left: 10px;
+        position: relative;
+        left: 250px;
+    }
+    
+    .food {
+        position: relative;
+        left: 260px;
+        font-size: 19px;
+    }
+    
+    .header-2 {
+        font-weight: bold;
+        text-align: left;
+        font-size: 14px;
+        margin-left: 10px;
+        position: relative;
+        left: 103px;
+    }
+    
+    .number-reference {
+        position: relative;
+        left: 120px;
+    }
+    
+    .header-3 {
+        font-weight: bold;
+        text-align: left;
+        font-size: 14px;
+        margin-left: 10px;
+        position: relative;
+        left: -30px;
+    }
+    
+    .header-4 {
+        font-weight: bold;
+        text-align: left;
+        font-size: 14px;
+        margin-left: 10px;
+        position: relative;
+        left: 250px;
+    }
+    
+    .actual-quantity {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        left: -123px
+    }
+    
+    .actual-quantity-1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        left: -25px;
+    }
+    
+    .quantity-input {
+        width: 50px;
+        text-align: center;
+        background-color: #f8f3eb;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        padding: 3px;
+    
+    }
+    
+    .btn-1 {
+        width: 25px;
+        height: 25px;
+        background-color: #ffc107;
+        border: none;
+        border-radius: 50%;
+        font-size: 16px;
+        line-height: 25px;
+        text-align: center;
+        cursor: pointer;
+        margin: 0 20px;
+        position: relative;
+        left: 45px;
+        /* 调整按钮和输入框之间的间距 */
+    }
+    
+    .btn-2 {
+        width: 25px;
+        height: 25px;
+        background-color: #ffc107;
+        border: none;
+        border-radius: 50%;
+        font-size: 16px;
+        line-height: 25px;
+        text-align: center;
+        cursor: pointer;
+        margin: 0 20px;
+        position: relative;
+        left: -45px;
+        /* 调整按钮和输入框之间的间距 */
+    }
+    
+    
+    .btn:active {
+        transform: scale(0.9);
+    }
+    
+    /* 计时器 */
+    /* body {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                    background-color: #f9f9f9;
+                }
+     */
+    .timer-container {
+        text-align: center;
+    }
+    
+    .timer-circle {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid #FFC300;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        transition: width 0.5s ease, height 0.5s ease;
+    }
+    
+    .time-display {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    
+    .timer-button {
+        position: absolute;
+        background-color: #FFC300;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 1.5rem;
+        color: white;
+        cursor: pointer;
+        outline: none;
+    }
+    
+    #decrease {
+        left: -40px;
+    }
+    
+    #increase {
+        right: -40px;
+    }
+    
+    .time-label {
+        font-size: 1rem;
+        color: #2c3e50;
+        margin-top: 10px;
+    }
+    
+    
+    
+    .start-button {
+        width: 150px;
+        height: 40px;
+        border: none;
+        color: white;
+        font-size: 1rem;
+        margin-top: 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        outline: none;
+        background-color: #FFC300;
+    }
+    
+    .cancel-button {
+        width: 150px;
+        height: 40px;
+        border: none;
+        color: white;
+        font-size: 1rem;
+        margin-top: 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        outline: none;
+        background-color: #FFC300;
+        display: none;
+        position: relative;
+        left: 140px;
+        top: -60px
+    }
+    
+    .pause-button {
+        width: 55px;
+        height: 40px;
+        border: none;
+        color: white;
+        font-size: 1rem;
+        margin-top: 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        outline: none;
+        background-color: #FFC300;
+        display: none;
+        position: relative;
+        left: 80px;
+    }
+    
+    /* 语音助手 */
+    .container-6 {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(145deg, #ebeae5, #f5f3f0);
+        position: relative;
+        top: 200px;
+    }
+    
+    .speech-bubble {
+        background-color: #FEF5E6;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        line-height: 1.5;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        max-width: 440px;
+        left: 110px;
+    }
+    
+    .speech-bubble::after {
+        content: '';
+        position: absolute;
+        bottom: -20px;
+        left: 30px;
+        width: 0;
+        height: 0;
+        border: 10px solid transparent;
+        border-top-color: #f9f3e1;
+    }
+    
+    .assistant-image {
+        display: block;
+        margin: 0 auto;
+        cursor: pointer;
+        max-width: 200px;
+        position: relative;
+        left: -190px;
+    }
+    
+}
