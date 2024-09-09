@@ -196,6 +196,7 @@ const closePopup = () => {
 };
 
 const saveComment = (comment) => {
+  // todo
   console.log(`Comment saved for step ${selectedStep}:`, comment);
   closePopup();
 };
@@ -205,222 +206,286 @@ const [isCameraOn, setIsCameraOn] = useState(false);
 const [capturedPhoto, setCapturedPhoto] = useState(null);
 const videoRef = useRef(null);
 const canvasRef = useRef(null);
+// todo
 
   return (
     <div className="my-container3">
-    <div className="flex-col page">
-  <div className="flex-col">
-    <div className="flex-row justify-between">
-      <div className="flex-row items-center relative section">
-        <img className="image1" src={logo} alt="logo" />
-        <div className="shrink-0 section_3 view"></div>
-        <span className="font text_2">蔓越莓饼干</span>
-        <div className="shrink-0 section_3 view_2"></div>
-        <span className="font text_3">用户{uid.current}</span>
-      </div>
-      <div className="section_2">
-        <img className="image3" src={adjustIcon} alt="" />
-        <img className="image4" src={assistIcon} alt="" />
-        <img className="image5" src={evaluateIcon} alt="" />
-        <img className="image6" src={saveIcon} alt="" />
-        <img className="image7" src={helpIcon} alt="" />
-      </div>
-    </div>
-    <div className="flex-row group">
-      <span className="font_2 text_4">烘焙成果</span>
-      <button
-        className="image8"
-        type="button"
-        // onClick -> 调用系统相机拍照
-        style={{ border: "none", background: "none", padding: 0 }}
-      >
-        <img src={photoIcon} alt="reset" />
-      </button>
-      <div className="flex-row ml-280">
-        <span className="font_2 text_5">实际用量（克）</span>
-        <span className="font_2 text_6 ml-175">评价</span>
-      </div>
-    </div>
-    <div className="flex-row justify-center group_2">
-      <div className="flex-col justify-start items-center relative image-wrapper">
-        <img
-          className="image2"
-          src={defaultProduct}
-          alt="default prediction"
-        />
-      </div>
-      <div className="flex-col relative section_4 ml-19">
-        <div className="flex-row items-baseline self-stretch">
-          <span className="font_3 text_7">黄油</span>
-          <div className="selector_1">
-            <div>
-              <button className="yellow-button" onClick={handleOilDecrement}>-</button>
-              <input
-                type="number"
-                id="quantity1"
-                className="value"
-                value="110"
-                onChange={handleOilChange}
-              />
-              <button className="yellow-button" onClick={handleOilIncrement}>+</button>
-            </div>
-          </div>
-          <span className="font_4 text_8 ml-119">左右</span>
-        </div>
-        <div className="mt-24 flex-row items-baseline self-stretch">
-          <span className="font_5 text_10">细砂糖</span>
-          <div className="selector_2">
-            <div>
-              <button className="yellow-button" onClick={handleSugarDecrement}>-</button>
-              <input
-                type="number"
-                id="quantity2"
-                className="value"
-                value="80"
-                onChange={handleSugarChange}
-              />
-              <button className="yellow-button" onClick={handleSugarIncrement}>+</button>
-            </div>
-          </div>
-          <span className="font_4 text_11 ml-120">上限</span>
-        </div>
-        <div className="mt-24 flex-row items-baseline self-stretch">
-          <span className="font_5 text_35">蛋白液</span>
-          <div className="selector_3">
-            <div>
-              <button className="yellow-button" onClick={handleLiquidDecrement}>-</button>
-              <input
-                type="number"
-                id="quantity3"
-                className="value"
-                value={inputLiquid}
-                onChange={handleLiquidChange}
-              />
-              <button className="yellow-button" onClick={handleLiquidIncrement}>+</button>
-            </div>
-          </div>
-          <span className="font_4 text_12 ml-120">下限</span>
-        </div>
-        <div className="mt-24 flex-row items-baseline self-stretch">
-          <span className="font_3 text_14">低筋面粉</span>
-          <div className="selector_4">
-            <div>
-              <button className="yellow-button" onClick={handleFlourDecrement}>-</button>
-              <input
-                type="number"
-                id="quantity4"
-                className="value"
-                value={inputFlour}
-                onChange={handleFlourChange}
-              />
-              <button className="yellow-button" onClick={handleFlourIncrement}>+</button>
-            </div>
-          </div>
-          <span className="font_4 text_17 ml-120">上限</span>
-        </div>
-        <div className="mt-24 flex-row items-baseline self-stretch">
-          <span className="font_3 text_18">蔓越莓干</span>
-          <div className="selector_5">
-            <div>
-              <button className="yellow-button" onClick={handleBerryDecrement}>-</button>
-              <input
-                type="number"
-                id="quantity5"
-                className="value"
-                value={inputBerry}
-                onChange={handleBerryChange}
-              />
-              <button className="yellow-button" onClick={handleBerryIncrement}>+</button>
-            </div>
-          </div>
-          <span className="font_4 text_19 ml-119">左右</span>
-        </div>
-        <span className="mt-24 self-start font_2 text_21">总计</span>
-        <div className="total">
-          <span id="sum" className="text_34">
-            455
-          </span>
-        </div>
-      </div>
-      <div className="flex-col section_5 ml-19">
+      <div className="flex-col page">
         <div className="flex-col">
-          <span className="self-start font_4 text_9">甜度</span>
-          <div className="slidecontainer1">
-            <input
-              type="range"
-              min="1"
-              max="6"
-              value={sweetnessValue}
-              className="slider"
-              id="myRange"
-            />
+          <div className="flex-row justify-between">
+            <div className="flex-row items-center relative section">
+              <img className="image1" src={logo} alt="logo" />
+              <div className="shrink-0 section_3 view"></div>
+              <span className="font text_2">蔓越莓饼干</span>
+              <div className="shrink-0 section_3 view_2"></div>
+              <span className="font text_3">用户{uid.current}</span>
+            </div>
+            <div className="section_2">
+              <img className="image3" src={adjustIcon} alt="" />
+              <img className="image4" src={assistIcon} alt="" />
+              <img className="image5" src={evaluateIcon} alt="" />
+              <img className="image6" src={saveIcon} alt="" />
+              <img className="image7" src={helpIcon} alt="" />
+            </div>
           </div>
-          <div className="flex-row self-stretch group_3 mt-17">
-            <span className="font_4 text_31">淡</span>
-            <span className="font_4 ml-339 text_32">甜</span>
+          <div className="flex-row group">
+            <span className="font_2 text_4">烘焙成果</span>
+            <button
+              className="image8"
+              type="button"
+              // onClick -> 调用系统相机拍照
+              style={{ border: "none", background: "none", padding: 0 }}
+            >
+              <img src={photoIcon} alt="reset" />
+            </button>
+            <div className="flex-row ml-280">
+              <span className="font_2 text_5">实际用量（克）</span>
+              <span className="font_2 text_6 ml-175">评价</span>
+            </div>
+          </div>
+          <div className="flex-row justify-center group_2">
+            <div className="flex-col justify-start items-center relative image-wrapper">
+              <img
+                className="image2"
+                src={defaultProduct}
+                alt="default prediction"
+              />
+            </div>
+            <div className="flex-col relative section_4 ml-19">
+              <div className="flex-row items-baseline self-stretch">
+                <span className="font_3 text_7">黄油</span>
+                <div className="selector_1">
+                  <div>
+                    <button
+                      className="yellow-button"
+                      onClick={handleOilDecrement}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      id="quantity1"
+                      className="value"
+                      value="110"
+                      onChange={handleOilChange}
+                    />
+                    <button
+                      className="yellow-button"
+                      onClick={handleOilIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="font_4 text_8 ml-119">左右</span>
+              </div>
+              <div className="mt-24 flex-row items-baseline self-stretch">
+                <span className="font_5 text_10">细砂糖</span>
+                <div className="selector_2">
+                  <div>
+                    <button
+                      className="yellow-button"
+                      onClick={handleSugarDecrement}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      id="quantity2"
+                      className="value"
+                      value="80"
+                      onChange={handleSugarChange}
+                    />
+                    <button
+                      className="yellow-button"
+                      onClick={handleSugarIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="font_4 text_11 ml-120">上限</span>
+              </div>
+              <div className="mt-24 flex-row items-baseline self-stretch">
+                <span className="font_5 text_35">蛋白液</span>
+                <div className="selector_3">
+                  <div>
+                    <button
+                      className="yellow-button"
+                      onClick={handleLiquidDecrement}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      id="quantity3"
+                      className="value"
+                      value={inputLiquid}
+                      onChange={handleLiquidChange}
+                    />
+                    <button
+                      className="yellow-button"
+                      onClick={handleLiquidIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="font_4 text_12 ml-120">下限</span>
+              </div>
+              <div className="mt-24 flex-row items-baseline self-stretch">
+                <span className="font_3 text_14">低筋面粉</span>
+                <div className="selector_4">
+                  <div>
+                    <button
+                      className="yellow-button"
+                      onClick={handleFlourDecrement}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      id="quantity4"
+                      className="value"
+                      value={inputFlour}
+                      onChange={handleFlourChange}
+                    />
+                    <button
+                      className="yellow-button"
+                      onClick={handleFlourIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="font_4 text_17 ml-120">上限</span>
+              </div>
+              <div className="mt-24 flex-row items-baseline self-stretch">
+                <span className="font_3 text_18">蔓越莓干</span>
+                <div className="selector_5">
+                  <div>
+                    <button
+                      className="yellow-button"
+                      onClick={handleBerryDecrement}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      id="quantity5"
+                      className="value"
+                      value={inputBerry}
+                      onChange={handleBerryChange}
+                    />
+                    <button
+                      className="yellow-button"
+                      onClick={handleBerryIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className="font_4 text_19 ml-119">左右</span>
+              </div>
+              <span className="mt-24 self-start font_2 text_21">总计</span>
+              <div className="total">
+                <span id="sum" className="text_34">
+                  455
+                </span>
+              </div>
+            </div>
+            <div className="flex-col section_5 ml-19">
+              <div className="flex-col">
+                <span className="self-start font_4 text_9">甜度</span>
+                <div className="slidecontainer1">
+                  <input
+                    type="range"
+                    min="1"
+                    max="6"
+                    value={sweetnessValue}
+                    className="slider"
+                    id="myRange"
+                  />
+                </div>
+                <div className="flex-row self-stretch group_3 mt-17">
+                  <span className="font_4 text_31">淡</span>
+                  <span className="font_4 ml-339 text_32">甜</span>
+                </div>
+              </div>
+              <div className="mt-44 flex-col">
+                <span className="self-start font_4 text_13">口感</span>
+                <div className="slidecontainer2">
+                  <input
+                    type="range"
+                    min="1"
+                    max="6"
+                    value={textureValue}
+                    className="slider"
+                    id="myRange"
+                  />
+                </div>
+                <div className="flex-row self-stretch group_4 mt-17">
+                  <span className="font_4 text_15">脆硬</span>
+                  <span className="font_4 text_16 ml-306">酥松</span>
+                </div>
+              </div>
+              <div className="mt-44 flex-col">
+                <span className="self-start font_4 text_20">奶香</span>
+                <div className="slidecontainer3">
+                  <input
+                    type="range"
+                    min="1"
+                    max="6"
+                    value={milkinessValue}
+                    className="slider"
+                    id="myRange"
+                  />
+                </div>
+                <div className="flex-row self-stretch group_3 mt-17">
+                  <span className="font_4 text_33">淡</span>
+                  <span className="font_4 text_22 ml-339">浓</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mt-44 flex-col">
-          <span className="self-start font_4 text_13">口感</span>
-          <div className="slidecontainer2">
-            <input
-              type="range"
-              min="1"
-              max="6"
-              value={textureValue}
-              className="slider"
-              id="myRange"
-            />
+        <div className="mt-30 flex-col">
+          <div className="flex-row justify-between">
+            <span className="font_2 text_23">制作步骤</span>
+            {isEditing ? (
+              <img
+                className="image10"
+                src={finishIconSmall}
+                alt=""
+                onClick={handleCommentClick}
+              />
+            ) : (
+              <img
+                className="image11"
+                src={addCommentIcon}
+                alt=""
+                onClick={handleCommentClick}
+              />
+            )}
+            <span className="font_2 text_24">实际热量</span>
           </div>
-          <div className="flex-row self-stretch group_4 mt-17">
-            <span className="font_4 text_15">脆硬</span>
-            <span className="font_4 text_16 ml-306">酥松</span>
-          </div>
-        </div>
-        <div className="mt-44 flex-col">
-          <span className="self-start font_4 text_20">奶香</span>
-          <div className="slidecontainer3">
-            <input
-              type="range"
-              min="1"
-              max="6"
-              value={milkinessValue}
-              className="slider"
-              id="myRange"
-            />
-          </div>
-          <div className="flex-row self-stretch group_3 mt-17">
-            <span className="font_4 text_33">淡</span>
-            <span className="font_4 text_22 ml-339">浓</span>
+          <div className="flex-row mt-15">
+            <InstructionsList isEditing={isEditing} openPopup={openPopup} />
+            {selectedStep !== null && (
+              <Popup
+                step={selectedStep}
+                onClose={closePopup}
+                onSave={saveComment}
+              />
+            )}
+            <div className="flex-col items-center shrink-0 section_7 ml-19">
+              <span className="text_27">{caloriePerGram}</span>
+              <span className="font_3 text_30 mt-31">卡路里/100克</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div className="mt-30 flex-col">
-    <div className="flex-row justify-between">
-      <span className="font_2 text_23">制作步骤</span>
-      {isEditing ? 
-      <img className="image10" src={finishIconSmall}  alt="" onClick={handleCommentClick}/> : <img className="image11" src={addCommentIcon}  alt="" onClick={handleCommentClick}/>}
-      <span className="font_2 text_24">实际热量</span>
-    </div>
-    <div className="flex-row mt-15">
-    <InstructionsList isEditing={isEditing} openPopup={openPopup} />
-    {selectedStep !== null && (
-        <Popup
-          step={selectedStep}
-          onClose={closePopup}
-          onSave={saveComment}
-        />
-      )}
-    <div className="flex-col items-center shrink-0 section_7 ml-19">
-        <span className="text_27">{caloriePerGram}</span>
-        <span className="font_3 text_30 mt-31">卡路里/100克</span>
-      </div>
-      </div>
-  </div>
-</div>
-</div>
   );
 };
 
