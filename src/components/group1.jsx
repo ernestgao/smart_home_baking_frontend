@@ -191,7 +191,7 @@ const Group1 = () => {
   const navigate = useNavigate();
   const handleEvaluate = (e) => {
     e.preventDefault();
-    navigate("/manage");
+    navigate("/evaluate");
   }
 
   const getResults = (results) => {

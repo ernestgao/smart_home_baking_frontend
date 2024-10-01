@@ -11,12 +11,14 @@
         border-bottom: solid 0.063rem #d9d9d9;
         width: 360px;
         position: relative;
-        left: 10px;
+        left: -270px;
+        top: 75px;
     }
     
     .image1 {
         position: relative;
-        left: -8px;
+        left: -18px;
+        width: 100px;
     }
     
     .section {
@@ -51,8 +53,8 @@
         gap: 20px;
         margin: 20px;
         position: relative;
-        top: -35px;
-        left: -580px;
+        top: 42px;
+        left: -400px;
     }
     
     .text-container {
@@ -68,7 +70,7 @@
         padding: 10px;
         border: 1px solid white;
         font-size: 16px;
-        width: 78px;
+        width: 85px;
         text-align: center;
         position: relative;
         left: 1px;
@@ -102,8 +104,8 @@
     
     .page2 {
         position: relative;
-        left: 600px;
-        top: -265px;
+        left: 250px;
+        top: -185px;
     }
     
     .image2 {
@@ -132,8 +134,8 @@
         width: 400px;
         overflow: hidden;
         position: relative;
-        top: -126px;
-        left: 10px;
+        top: -45px;
+        left: -285px;
     }
     
     .tab-header {
@@ -197,7 +199,7 @@
     
     .text1 {
         position: relative;
-        right: 105px;
+        right: -35px;
     }
     
     //按钮样式
@@ -208,6 +210,8 @@
         font-size: 16px;
         border-radius: 5px;
         cursor: pointer;
+        position: absolute;
+
     }
     
     .button1 {
@@ -227,7 +231,7 @@
         border-radius: 5px;
         cursor: pointer;
         position: relative;
-        right: 208px;
+        right: 195px;
     }
     
     //图片样式
@@ -243,12 +247,15 @@
     .image7 {
         position: relative;
         top: -25px;
-        left: 225px;
+        left: 70px;
     }
     
     //数字样式
     .numbers {
         margin-top: 10px;
+        position: relative;
+    left: -60px;
+    top: -35px;
     }
     
     .numbers .large {
@@ -269,7 +276,7 @@
     
     .container-4 {
         position: relative;
-        top: -70px;
+        top: -95px;
     }
     
     /* */
@@ -306,7 +313,7 @@
         font-family: Arial, sans-serif;
         position: relative;
         left: -250px;
-        top: -20px;
+        top: -55px;
     }
     
     .table {
@@ -327,12 +334,12 @@
         font-size: 14px;
         margin-left: 10px;
         position: relative;
-        left: 250px;
+        left: 262px;
     }
     
     .food {
         position: relative;
-        left: 260px;
+        left: 200px;
         font-size: 19px;
     }
     
@@ -342,12 +349,12 @@
         font-size: 14px;
         margin-left: 10px;
         position: relative;
-        left: 103px;
+        left: 150px;
     }
     
     .number-reference {
         position: relative;
-        left: 120px;
+        left: 100px;
     }
     
     .header-3 {
@@ -356,7 +363,7 @@
         font-size: 14px;
         margin-left: 10px;
         position: relative;
-        left: -30px;
+        left: 70px;
     }
     
     .header-4 {
@@ -373,7 +380,7 @@
         align-items: center;
         justify-content: space-between;
         position: relative;
-        left: -123px
+        left: 30px
     }
     
     .actual-quantity-1 {
@@ -392,6 +399,8 @@
         border-radius: 10px;
         font-size: 16px;
         padding: 3px;
+        position: relative;
+        left: -30px;
     
     }
     
@@ -406,8 +415,7 @@
         text-align: center;
         cursor: pointer;
         margin: 0 20px;
-        position: relative;
-        left: 45px;
+       
         /* 调整按钮和输入框之间的间距 */
     }
     
@@ -423,7 +431,7 @@
         cursor: pointer;
         margin: 0 20px;
         position: relative;
-        left: -45px;
+        left: -70px;
         /* 调整按钮和输入框之间的间距 */
     }
     
@@ -551,8 +559,8 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         background: linear-gradient(145deg, #fff, #f5f3f0);
         position: absolute;
-        top: 50px;
-        left: 445px;
+        top: 80px;
+    left: 430px;
     }
     
     .speech-bubble {
