@@ -5,6 +5,8 @@ import SecondPage from "./components/group2";
 import ThirdPage from "./components/group3";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+import VoiceInput from "./components/voicetest";
+
 function App() {
   return (
     <Router>
@@ -24,6 +26,9 @@ function App() {
 
           {/* Route to Third Page */}
           <Route path="/evaluate" element={<ThirdPage />} />
+
+          {/* Route to Voice Test */}
+          <Route path="/voice" element={<VoiceInput />} />
         </Routes>
       </div>
     </Router>

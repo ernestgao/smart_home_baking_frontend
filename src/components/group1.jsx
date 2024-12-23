@@ -429,7 +429,7 @@ const Group1 = () => {
                 将塑形后的面团放到冰箱中冷冻30分钟，面团变硬后取出，切成约0.5厘米的薄片。
               </span>
               <span className="font_3 mt-23">
-                烤箱预热，上火160度，下火150度，烘烤约20分钟后取出，静置冷却。
+                烤箱预热，上火160度，下火150度。铺油纸，摆好饼干。烘烤约20分钟后取出，静置冷却。
               </span>
             </div>
             <div className="flex-col items-center shrink-0 section_6 ml-19">

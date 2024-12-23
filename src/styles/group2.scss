@@ -554,13 +554,13 @@
         width: 760px;
         height: 630px;
         margin: 50px auto;
-        padding: 20px;
+        // padding: 20px;
         border-radius: 15px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         background: linear-gradient(145deg, #fff, #f5f3f0);
         position: absolute;
-        top: 80px;
-    left: 430px;
+        top: 100px;
+    left: 600px;
     }
     
     .speech-bubble {
@@ -574,6 +574,7 @@
         position: relative;
         max-width: 440px;
         left: 110px;
+        top: 20px
     }
     
     .speech-bubble::after {
@@ -594,6 +595,129 @@
         max-width: 200px;
         position: relative;
         left: -190px;
+        top: 20px
     }
+
+    /* 聊天容器 */
+.chat-container {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  /* 聊天头部 */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffc107;
+    color: white;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .bot-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  /* 聊天主体 */
+  .chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+/* Message Box Styles */
+.chat-message span {
+    max-width: 70%; /* Limit message width */
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* Bot Message Box */
+  .bot-message span {
+    background-color: #FEF5E6; /* Light blue for bot */
+    color: #333; /* Text color for bot */
+    border: 1px solid #F0D5A5; /* Border for bot message */
+  }
+  
+  /* User Message Box */
+  .user-message span {
+    background-color: #A9D3DD; /* Light gray for user */
+    color: #333; /* Text color for user */
+    border: 1px solid #ddd; /* Border for user message */
+  }
+  
+  .small-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  /* 聊天输入框 */
+  .chat-footer {
+    display: flex;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ccc;
+  }
+
+  .chat-footer-before {
+    display: flex;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-top: 1px solid #ccc;
+    border-radius: 15px;
+    bottom: 0px;
+    position: absolute;
+  }
+
+  .recognition-status-before {
+    position: absolute;
+    top: 30%; /* Adjust this value to control vertical positioning */
+    left: 50%;
+    transform: translateX(-50%);
+    color: black;
+    font-size: 16px; /* Adjust font size as needed */
+    padding: 5px 10px; /* Optional: Padding around the text */
+    border-radius: 5px; /* Optional: Rounded corners */
+    text-align: center;
+  }
+
+  .image_3 {
+	width: 100%;
+	height: 100%;
+    cursor: pointer;
+}
+
+  .recognition-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .recognition-status {
+    position: absolute;
+    top: 88%; /* Adjust this value to control vertical positioning */
+    left: 50%;
+    transform: translateX(-50%);
+    color: black;
+    font-size: 16px; /* Adjust font size as needed */
+    padding: 5px 10px; /* Optional: Padding around the text */
+    border-radius: 5px; /* Optional: Rounded corners */
+    text-align: center;
+  }
     
 }

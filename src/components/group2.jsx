@@ -7,11 +7,15 @@ import evaluateIcon from "../assets/group2/成果评价浅.png";
 import finishIcon from "../assets/group2/完成.png";
 import helpIcon from "../assets/group2/帮助.png";
 import robot from "../assets/group2/机器人.png";
+import ButtonImage from "../assets/group2/button.png";
+import RobotImage from "../assets/group2/robot.png";
+import BubbleIcon from "../assets/group2/bubble.png";
 import butterImage from "../assets/group2/黄油.png";
 import sugarImage from "../assets/group2/细砂糖.png";
 import flourImage from "../assets/group2/面粉.png";
 import liquidImage from "../assets/group2/蛋液.png";
 import berryImage from "../assets/group2/蔓越莓.png";
+import * as SpeechSDK from "microsoft-cognitiveservices-speech-sdk";
 
 const Group2 = () => {
   const url = "https://really-touching-gull.ngrok-free.app";
@@ -57,7 +61,20 @@ const Group2 = () => {
     };
 
     fetchData();
+
+    return () => {
+      if (recognizerRef.current && !recognizerState.current.disposed) {
+        recognizerRef.current.close();
+        recognizerState.current.disposed = true;
+        console.log("Recognizer cleaned up on unmount.");
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close(); // Clean up AudioContext
+        console.log("AudioContext cleaned up.");
+      }
+    };
   }, []);
+
   const getResults = (results) => {
     let result = results.result;
     const extractedAmount = result.amount;
@@ -102,6 +119,8 @@ const Group2 = () => {
   const [activeTab, setActiveTab] = useState("foodScale");
   //scale
   const [currentItem, setCurrentItem] = useState(0);
+  const [showChat, setShowChat] = useState(false);
+
   const items = [
     {
       text: "黄油",
@@ -216,6 +235,271 @@ const Group2 = () => {
     setTime(30);
     setSecondsLeft(30 * 60);
   };
+
+  const [audioContextInitialized, setAudioContextInitialized] = useState(false);
+
+  const toggleChatShow = async () => {
+    setShowChat((prevShowChat) => !prevShowChat);
+    try {
+      await checkMicrophonePermissions();
+      await ensureAudioContext();
+      setAudioContextInitialized(true);
+      console.log("AudioContext initialized manually.");
+      startListeningForKeyword();
+    } catch (error) {
+      console.error("Failed to initialize AudioContext manually:", error);
+      alert("Failed to initialize audio. Please try again.");
+    }
+  };
+
+  const [messages, setMessages] = useState([
+    { type: "bot", text: "您好，需要我时请呼唤“Yummy（呀咪）" },
+  ]);
+  // const [input, setInput] = useState("");
+  // const [isListeningKey, setIsListeningKey] = useState(false);
+  const [isListening, setIsListening] =  useState(false);
+
+  const recognizerRef = useRef(null);
+  const recognizerState = useRef({ disposed: false });
+  const keyword = "yummy"; // Define the keyword
+
+
+  const initializeRecognizer = (speechConfig, audioConfig) => {
+    if (recognizerRef.current != null) {
+      if (!recognizerState.current.disposed){
+        recognizerRef.current.close();
+        recognizerState.current.disposed = true;
+      }
+    }
+    recognizerRef.current = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+    recognizerState.current.disposed = false;
+  };
+
+  const startListeningForKeyword = () => {
+    const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
+      process.env.REACT_APP_SPEECH_KEY,
+      process.env.REACT_APP_SPEECH_REGION
+    );
+    speechConfig.speechRecognitionLanguage = "en-US";
+  
+    const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+
+    initializeRecognizer(speechConfig, audioConfig);
+
+    const recognizer = recognizerRef.current;
+  
+    // setIsListeningKey(true);
+    let keywordDetected = false;
+  
+    recognizer.recognizing = (s, e) => {
+      if (keywordDetected) return;
+      console.log(`Recognizing keyword: ${e.result.text}`);
+      if (e.result.text.toLowerCase().includes(keyword)) {
+        recognizer.stopContinuousRecognitionAsync(() => {
+          console.log("Keyword detected. Starting voice recognition...");
+          // recognizer.close();
+          // setIsListeningKey(false);
+          setIsListening(true);
+          startVoiceRecognition(() => {
+            // Reset `keywordDetected` when transitioning back
+            keywordDetected = false;
+          });
+        });
+      }
+    };
+  
+    recognizer.canceled = (s, e) => {
+      console.error(`Keyword detection canceled: ${e.errorDetails}`);
+      // setIsListeningKey(false);
+      // recognizer.close();
+    };
+  
+    recognizer.startContinuousRecognitionAsync(
+      () => console.log("Started keyword spotting."),
+      (err) => {
+        console.error(`Failed to start keyword spotting: ${err}`);
+        // setIsListeningKey(false);
+        // recognizer.close();
+      }
+    );
+  };
+  
+  const startVoiceRecognition = (onComplete) => {
+    const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
+      process.env.REACT_APP_SPEECH_KEY,
+      process.env.REACT_APP_SPEECH_REGION
+    );
+    speechConfig.speechRecognitionLanguage = "zh-CN";
+  
+    const audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+
+    initializeRecognizer(speechConfig, audioConfig);
+
+    const recognizer = recognizerRef.current;
+  
+    console.log("Starting single recognition session...");
+    recognizer.recognizeOnceAsync(
+      async (result) => {
+        if (result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
+          const recognizedText = result.text.trim();
+          console.log(`Recognized Text: ${recognizedText}`);
+  
+          if (recognizedText) {
+            try {
+              console.log(`Sending recognized text to backend: ${recognizedText}`);
+              const response = await fetch(`${url}/voice-command`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: recognizedText }),
+              });
+              const data = await response.json();
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { type: "user", text: recognizedText },
+                { type: "bot", text: data.messages || "No response received." },
+              ]);
+            } catch (error) {
+              console.error("Failed to send recognized text to backend:", error);
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { type: "bot", text: "Sorry, unable to connect to the server." },
+              ]);
+            }
+          } else {
+            console.warn("No recognized text to process.");
+          }
+        } else {
+          console.error(
+            "Recognition failed. Reason:",
+            result.reason,
+            "Error Details:",
+            result.errorDetails
+          );
+        }
+  
+        // recognizer.close();
+        // recognizerRef.current = null;
+        if (onComplete) onComplete();
+        setIsListening(false);
+        startListeningForKeyword(); // Restart keyword detection
+      },
+      (err) => {
+        console.error("Recognition failed:", err);
+        // recognizer.close();
+        // recognizerRef.current = null;
+        startListeningForKeyword(); // Restart keyword detection
+      }
+    );
+  }
+
+  //   let recognizedText = "";
+  
+  //   recognizer.recognized = (s, e) => {
+  //     if (e.result && e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
+  //       console.log(`Recognized: ${e.result.text}`);
+  //       recognizedText += e.result.text;
+  //     }
+  //     console.log("Recognizer Event Triggered:", e);
+  //   };
+  
+  //   recognizer.sessionStopped = async (s, e) => {
+  //     console.log("Voice recognition session stopped.");
+  //     setIsListening(false);
+  
+  //     if (recognizedText.trim()) {
+  //       try {
+  //         console.log(`send request: ${recognizedText.trim()}`)
+  //         const response = await fetch(`${url}/voice-command`, {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({ message: recognizedText.trim() }),
+  //         });
+  //         const data = await response.json();
+  //         setMessages((prevMessages) => [
+  //           ...prevMessages,
+  //           { type: "user", text: recognizedText.trim() },
+  //           { type: "bot", text: data.messages || "无法获取响应。" },
+  //         ]);
+  //       } catch (error) {
+  //         console.error("Failed to send command to backend:", error);
+  //         setMessages((prevMessages) => [
+  //           ...prevMessages,
+  //           { type: "bot", text: "抱歉，无法连接到服务器。" },
+  //         ]);
+  //       }
+  //     }
+  
+  //   // recognizer.close();
+  //   startListeningForKeyword(); // Restart keyword detection
+  //   if (onComplete) onComplete(); // Reset `keywordDetected`
+  //   };
+  
+  //   recognizer.canceled = (s, e) => {
+  //     console.error("Voice recognition canceled:", e.errorDetails);
+  //     setIsListening(false);
+  //     recognizer.close();
+  //     startListeningForKeyword(); // Restart keyword detection
+  //     if (onComplete) onComplete(); // Reset `keywordDetected`
+  //   };
+  
+  //   recognizer.startContinuousRecognitionAsync(
+  //     () => console.log("Started voice recognition."),
+  //     (err) => {
+  //       console.error("Failed to start voice recognition:", err);
+  //       setIsListening(false);
+  //       recognizer.close();
+  //       startListeningForKeyword(); // Restart keyword detection
+  //       if (onComplete) onComplete(); // Reset `keywordDetected`
+  //     }
+  //   );
+  // };
+  
+  const messagesEndRef = useRef(null);
+
+  const checkMicrophonePermissions = async () => {
+    const permissionStatus = await navigator.permissions.query({ name: "microphone" });
+  
+    console.log("Microphone permission state:", permissionStatus.state);
+  
+    if (permissionStatus.state === "denied") {
+      alert("Microphone access is denied. Please enable it in your browser settings.");
+    }
+  
+    if (permissionStatus.state === "prompt") {
+      alert(
+        "Microphone access is required for voice recognition. Please allow it in the upcoming browser prompt."
+      );
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        console.log("Microphone access granted.");
+      } catch (error) {
+        console.error("Microphone access denied:", error);
+      }
+    }
+  };
+
+  const audioContextRef = useRef(null);
+
+  const ensureAudioContext = async () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  
+    if (audioContextRef.current.state === "suspended") {
+      try {
+        await audioContextRef.current.resume();
+        console.log("AudioContext resumed.");
+      } catch (error) {
+        console.error("Error resuming AudioContext:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="my-container2">
@@ -453,7 +737,7 @@ const Group2 = () => {
                     min="0"
                   />
                   <button
-                    class="btn-2"
+                    className="btn-2"
                     onClick={() =>
                       changeQuantity(setActualBerry, actualBerry, 1)
                     }
@@ -526,21 +810,72 @@ const Group2 = () => {
         </div>
       </div>
       {/* <!-- 语音助手界面 --> */}
-      <div className="container-6">
+      
+      {!showChat ? (
+        <div className="container-6">
         <div className="speech-bubble">
           您好，我是您的烘焙助手“Yummy（呀咪）”。<br></br>
           您可以随时呼唤“Yummy”，向我提问，和我聊一聊您烘焙遇到的问题，我会向您提供文字、语音、图片、视频等提示。我也可以帮助您在双手占用的情况下进行一些简单的界面操作。
           <br></br>
           我们一起开始吧！（确认请说：你好，Yummy）
-        </div>
-        <img
+          <img
           src={robot}
           alt="Assistant"
           className="assistant-image"
           id="assistantImage"
+          onClick={toggleChatShow}
         />
-        {/* <audio id="assistantAudio" src="path_to_audio/audio.mp3"></audio> */}
+        </div>
+        <div className="chat-footer-before">
+        <div className="recognition-status-before" onClick={toggleChatShow}>
+        请先点击此处后与我交流
       </div>
+        <img className="image_3" src={ButtonImage} alt="Button Icon" onClick={toggleChatShow}/>
+        </div>
+        </div>
+      ):(
+        // <div className="chat-container">
+      <div className="container-6">
+      <div className="chat-container">
+      <div className="chat-header">
+        <img
+          src={RobotImage} // 聊天机器人头像URL
+          alt="Bot Avatar"
+          className="bot-avatar"
+        />
+        <span>Yummy</span>
+      </div>
+      <div className="chat-body">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`chat-message ${
+              message.type === "bot" ? "bot-message" : "user-message"
+            }`}
+          >
+            {message.type === "bot" && (
+              <img
+                src={RobotImage}
+                alt="Bot Avatar"
+                className="small-avatar"
+              />
+            )}
+            <span>{message.text}</span>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="chat-footer">
+      <p className="recognition-status">
+        {isListening
+          ? "Listening..."
+          : "请说'Hey Yummy'"}
+      </p>
+        <img className="image_3" src={ButtonImage} alt="Button Icon" />
+      </div>
+      </div>
+    </div>
+      )}
     </div>
   );
 };
