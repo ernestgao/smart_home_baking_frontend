@@ -193,6 +193,10 @@ const Group1 = () => {
     e.preventDefault();
     navigate("/evaluate");
   }
+  const handleAssist = (e) => {
+    e.preventDefault();
+    navigate("/inprogress");
+  }
 
   const getResults = (results) => {
     let result = results.result;
@@ -227,7 +231,11 @@ const Group1 = () => {
           </div>
           <div className="section_7">
             <img className="image3" src={adjustIcon} alt="" />
-            <img className="image4" src={assistIcon} alt="" />
+            <img 
+            className="image4" 
+            src={assistIcon} 
+            alt="" 
+            onClick={handleAssist}/>
             <img
               className="image5"
               src={evaluateIcon}

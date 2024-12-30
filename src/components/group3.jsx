@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/group3.scss";
 import "../styles/group3PopUp.scss";
 import logo from "../assets/group3/BaKing.png";
@@ -58,6 +59,16 @@ const Group3 = () => {
 
     fetchData();
   }, []);
+
+  const navigate = useNavigate();
+  const handleAdjust = (e) => {
+    e.preventDefault();
+    navigate("/planning");
+  }
+  const handleAssist = (e) => {
+    e.preventDefault();
+    navigate("/inprogress");
+  }
 
   const handleOilChange = (e) => {
     setInputOil(parseFloat(e.target.value));
@@ -221,8 +232,8 @@ const canvasRef = useRef(null);
               <span className="font text_3">用户{uid.current}</span>
             </div>
             <div className="section_2">
-              <img className="image3" src={adjustIcon} alt="" />
-              <img className="image4" src={assistIcon} alt="" />
+              <img className="image3" src={adjustIcon} alt="" onClick={handleAdjust}/>
+              <img className="image4" src={assistIcon} alt="" onClick={handleAssist}/>
               <img className="image5" src={evaluateIcon} alt="" />
               <img className="image6" src={saveIcon} alt="" />
               <img className="image7" src={helpIcon} alt="" />

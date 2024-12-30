@@ -6,6 +6,7 @@ import ThirdPage from "./components/group3";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import VoiceInput from "./components/voicetest";
+import ScaleDisplay from "./components/scale";
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
 
           {/* Route to Voice Test */}
           <Route path="/voice" element={<VoiceInput />} />
+
+          {/* Route to Scale Test */}
+          <Route path="/scale" element={<ScaleDisplay />} />
         </Routes>
       </div>
     </Router>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/group2.scss";
 import logo from "../assets/group2/BaKing.png";
 import adjustIcon from "../assets/group2/调整食谱浅.png";
@@ -16,6 +17,14 @@ import flourImage from "../assets/group2/面粉.png";
 import liquidImage from "../assets/group2/蛋液.png";
 import berryImage from "../assets/group2/蔓越莓.png";
 import * as SpeechSDK from "microsoft-cognitiveservices-speech-sdk";
+
+import io from 'socket.io-client';
+
+const socket = io('https://really-touching-gull.ngrok-free.app', {
+  extraHeaders: {
+    "ngrok-skip-browser-warning": "69420"
+  }
+});
 
 const Group2 = () => {
   const url = "https://really-touching-gull.ngrok-free.app";
@@ -52,6 +61,7 @@ const Group2 = () => {
         const result = await response.json();
         uid.current = result.uid;
         getResults(result);
+        initializeItems(result.result.amount);
       } catch (error) {
         setError(error.message);
         console.log("error fetch:", error);
@@ -118,42 +128,42 @@ const Group2 = () => {
   // scale and timer tabs
   const [activeTab, setActiveTab] = useState("foodScale");
   //scale
-  const [currentItem, setCurrentItem] = useState(0);
   const [showChat, setShowChat] = useState(false);
 
-  const items = [
-    {
-      text: "黄油",
-      image: butterImage,
-      largeNumber: actualOil,
-      smallNumber: oil,
-    },
-    {
-      text: "细砂糖",
-      image: sugarImage,
-      largeNumber: actualSugar,
-      smallNumber: sugar,
-    },
-    {
-      text: "蛋白液",
-      image: liquidImage,
-      largeNumber: actualLiquid,
-      smallNumber: liquid,
-    },
-    {
-      text: "低筋面粉",
-      image: flourImage,
-      largeNumber: actualFlour,
-      smallNumber: flour,
-    },
-    {
-      text: "蔓越莓干",
-      image: berryImage,
-      largeNumber: actualBerry,
-      smallNumber: berry,
-    },
-  ];
+
+  const [items, setItems] = useState([
+    { text: "黄油", image: butterImage, largeNumber: 0, smallNumber: 0 },
+    { text: "细砂糖", image: sugarImage, largeNumber: 0, smallNumber: 0 },
+    { text: "蛋白液", image: liquidImage, largeNumber: 0, smallNumber: 0 },
+    { text: "低筋面粉", image: flourImage, largeNumber: 0, smallNumber: 0 },
+    { text: "蔓越莓干", image: berryImage, largeNumber: 0, smallNumber: 0 },
+  ]);
+
+  const [currentItem, setCurrentItem] = useState(0);
+
+  const initializeItems = (amounts) => {
+    setItems((prevItems) =>
+      prevItems.map((item, index) => {
+        switch (index) {
+          case 0:
+            return { ...item, smallNumber: amounts.oil };
+          case 1:
+            return { ...item, smallNumber: amounts.sugar };
+          case 2:
+            return { ...item, smallNumber: amounts.liquid };
+          case 3:
+            return { ...item, smallNumber: amounts.flour };
+          case 4:
+            return { ...item, smallNumber: amounts.berry };
+          default:
+            return item;
+        }
+      })
+    );
+  };
+
   const updateContent = (index) => {
+    saveActual();
     if (index < 0) {
       setCurrentItem(items.length - 1);
     } else if (index >= items.length) {
@@ -162,10 +172,7 @@ const Group2 = () => {
       setCurrentItem(index);
     }
   };
-  const progressPercentage =
-    (parseInt(currentItem.largeNumber, 10) /
-      parseInt(currentItem.smallNumber, 10)) *
-    100;
+    
   const changeQuantity = (setQuantity, currentQuantity, delta) => {
     const newValue = currentQuantity + delta;
     if (newValue >= 0) {
@@ -178,6 +185,52 @@ const Group2 = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(time * 60);
 
+  // const [scalevalue, setScaleValue] = useState(0);
+  
+  useEffect(() => {
+    socket.on("data", (data) => {
+      const scaleValue = parseInt(data.weight, 10);
+      setItems((prevItems) =>
+        prevItems.map((item, index) =>
+          index === currentItem ? { ...item, largeNumber: scaleValue } : item
+        )
+      );
+    });
+
+    return () => {
+      socket.off("data");
+    };
+  }, [currentItem]);
+
+  const progressPercentage =
+  items[currentItem].smallNumber > 0
+    ? (items[currentItem].largeNumber / items[currentItem].smallNumber) * 100
+    : 0;
+
+  const saveActual = () => {
+    const scale = items[currentItem].largeNumber;
+    switch (currentItem) {
+      case 0:
+        setActualOil(scale);
+        break;
+      case 1:
+        setActualSugar(scale);
+        break;
+      case 2:
+        setActualLiquid(scale);
+        break;
+      case 3:
+        setActualFlour(scale);
+        break;
+      case 4:
+        setActualBerry(scale);
+        break;
+      default:
+        console.warn("Unknown item index");
+        break;
+    }
+  };
+
   useEffect(() => {
     let countdown;
     if (isCounting && !isPaused) {
@@ -189,6 +242,10 @@ const Group2 = () => {
             clearInterval(countdown);
             setIsCounting(false);
             alert("Time's up!");
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { type: "bot", text: "您好，计时时间到了。" },
+            ]);
             return prevSeconds;
           }
         });
@@ -358,6 +415,10 @@ const Group2 = () => {
                 { type: "user", text: recognizedText },
                 { type: "bot", text: data.messages || "No response received." },
               ]);
+
+              if (data.commands && data.commands.length > 0) {
+                data.commands.forEach(handleCommands);
+              }
             } catch (error) {
               console.error("Failed to send recognized text to backend:", error);
               setMessages((prevMessages) => [
@@ -392,69 +453,204 @@ const Group2 = () => {
     );
   }
 
-  //   let recognizedText = "";
+  const handleCommands = (intent, parameters = {}) => {
+    console.log("处理意图:", intent, "参数:", parameters);
   
-  //   recognizer.recognized = (s, e) => {
-  //     if (e.result && e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
-  //       console.log(`Recognized: ${e.result.text}`);
-  //       recognizedText += e.result.text;
-  //     }
-  //     console.log("Recognizer Event Triggered:", e);
-  //   };
+    switch (intent) {
+      case "设置时长":
+        // 设置计时器时长
+        const { time } = parameters;
+        if (time) {
+          setActiveTab("timer");
+          setTime(parseInt(time, 10));
+          setSecondsLeft(parseInt(time, 10) * 60);
+          console.log(`计时器已设置为 ${time} 分钟`);
+        } else {
+          console.warn("未提供时间参数。");
+        }
+        break;
   
-  //   recognizer.sessionStopped = async (s, e) => {
-  //     console.log("Voice recognition session stopped.");
-  //     setIsListening(false);
+      case "开始计时":
+        setActiveTab("timer");
+        handleStart(); // 开始计时器
+        break;
   
-  //     if (recognizedText.trim()) {
-  //       try {
-  //         console.log(`send request: ${recognizedText.trim()}`)
-  //         const response = await fetch(`${url}/voice-command`, {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({ message: recognizedText.trim() }),
-  //         });
-  //         const data = await response.json();
-  //         setMessages((prevMessages) => [
-  //           ...prevMessages,
-  //           { type: "user", text: recognizedText.trim() },
-  //           { type: "bot", text: data.messages || "无法获取响应。" },
-  //         ]);
-  //       } catch (error) {
-  //         console.error("Failed to send command to backend:", error);
-  //         setMessages((prevMessages) => [
-  //           ...prevMessages,
-  //           { type: "bot", text: "抱歉，无法连接到服务器。" },
-  //         ]);
-  //       }
-  //     }
+      case "暂停计时":
+        setActiveTab("timer");
+        handlePause(); // 暂停计时器
+        break;
   
-  //   // recognizer.close();
-  //   startListeningForKeyword(); // Restart keyword detection
-  //   if (onComplete) onComplete(); // Reset `keywordDetected`
-  //   };
+      case "恢复计时":
+        setActiveTab("timer");
+        handlePause(); // 恢复计时器 (同暂停计时器切换)
+        break;
   
-  //   recognizer.canceled = (s, e) => {
-  //     console.error("Voice recognition canceled:", e.errorDetails);
-  //     setIsListening(false);
-  //     recognizer.close();
-  //     startListeningForKeyword(); // Restart keyword detection
-  //     if (onComplete) onComplete(); // Reset `keywordDetected`
-  //   };
+      case "重置计时":
+        setActiveTab("timer");
+        handleCancel(); // 重置计时器
+        break;
   
-  //   recognizer.startContinuousRecognitionAsync(
-  //     () => console.log("Started voice recognition."),
-  //     (err) => {
-  //       console.error("Failed to start voice recognition:", err);
-  //       setIsListening(false);
-  //       recognizer.close();
-  //       startListeningForKeyword(); // Restart keyword detection
-  //       if (onComplete) onComplete(); // Reset `keywordDetected`
-  //     }
-  //   );
-  // };
+      case "增加计时":
+        setActiveTab("timer");
+        const { time: increaseTime } = parameters;
+        if (increaseTime) {
+          setTime((prevTime) => prevTime + parseInt(increaseTime, 10));
+          setSecondsLeft((prevSeconds) => prevSeconds + parseInt(increaseTime, 10) * 60);
+          console.log(`计时器增加了 ${increaseTime} 分钟`);
+        } else {
+          console.warn("未提供时间参数。");
+        }
+        break;
+  
+      case "减少计时":
+        setActiveTab("timer");
+        const { time: decreaseTime } = parameters;
+        if (decreaseTime) {
+          setTime((prevTime) => Math.max(0, prevTime - parseInt(decreaseTime, 10)));
+          setSecondsLeft((prevSeconds) => Math.max(0, prevSeconds - parseInt(decreaseTime, 10) * 60));
+          console.log(`计时器减少了 ${decreaseTime} 分钟`);
+        } else {
+          console.warn("未提供时间参数。");
+        }
+        break;
+  
+      case "去皮":
+        // TODO: 调秤
+        setActiveTab("foodscale");
+        // console.log("秤已归零");
+        break;
+  
+      case "跳转第一个页面":
+        navigate("/planning");
+        break;
+  
+      case "跳转第三个页面":
+        navigate("/evaluate");
+        break;
+  
+      case "回到上一步":
+        setActiveTab("foodscale");
+        changeText(-1); // 回到上一步
+        break;
+  
+      case "回到下一步":
+        setActiveTab("foodscale");
+        changeText(1); // 回到下一步
+        break;
+  
+      case "步骤跳转":
+        const { step } = parameters;
+        if (step) {
+          setActiveTab("foodscale");
+          setCurrentText(parseInt(step, 10) - 1); // 跳转到指定步骤
+          console.log(`跳转到步骤 ${step}`);
+        } else {
+          console.warn("未提供步骤参数。");
+        }
+        break;
+  
+      case "称量低筋面粉":
+        saveActual();
+        setActiveTab("foodscale");
+        setCurrentItem(3);
+        console.log("记录低筋面粉的重量");
+        break;
+  
+      case "增加低筋面粉":
+      case "减少低筋面粉":
+        setActiveTab("foodscale");
+        adjustWeight("flour", intent, parameters);
+        break;
+  
+      case "称量黄油":
+        saveActual();
+        setActiveTab("foodscale");
+        setCurrentItem(0);
+        console.log("记录黄油的重量");
+        break;
+  
+      case "增加黄油":
+      case "减少黄油":
+        setActiveTab("foodscale");
+        adjustWeight("butter", intent, parameters);
+        break;
+  
+      case "称量白砂糖":
+        saveActual();
+        setActiveTab("foodscale");
+        setCurrentItem(1);
+        console.log("记录白砂糖的重量");
+        break;
+  
+      case "增加白砂糖":
+      case "减少白砂糖":
+        setActiveTab("foodscale");
+        adjustWeight("sugar", intent, parameters);
+        break;
+  
+      case "称量蛋白液":
+        saveActual();
+        setActiveTab("foodscale");
+        setCurrentItem(2);
+        console.log("记录蛋白液的重量");
+        break;
+  
+      case "增加蛋白液":
+      case "减少蛋白液":
+        setActiveTab("foodscale");
+        adjustWeight("liquid", intent, parameters);
+        break;
+  
+      case "称量蔓越莓干":
+        saveActual();
+        setActiveTab("foodscale");
+        setCurrentItem(4);
+        console.log("记录蔓越莓干的重量");
+        break;
+  
+      case "增加蔓越莓干":
+      case "减少蔓越莓干":
+        setActiveTab("foodscale");
+        adjustWeight("berry", intent, parameters);
+        break;
+  
+      default:
+        console.warn(`收到未知意图: ${intent}`);
+    }
+  };
+  
+  // Helper function to adjust weights
+  const adjustWeight = (type, intent, parameters) => {
+    const { weight } = parameters;
+    if (weight) {
+      const weightValue = parseInt(weight, 10);
+      const adjustment = intent.startsWith("增加") ? weightValue : -weightValue;
+  
+      switch (type) {
+        case "flour":
+          setActualFlour((prev) => Math.max(0, prev + adjustment));
+          break;
+        case "butter":
+          setActualOil((prev) => Math.max(0, prev + adjustment));
+          break;
+        case "sugar":
+          setActualSugar((prev) => Math.max(0, prev + adjustment));
+          break;
+        case "liquid":
+          setActualLiquid((prev) => Math.max(0, prev + adjustment));
+          break;
+        case "berry":
+          setActualBerry((prev) => Math.max(0, prev + adjustment));
+          break;
+        default:
+          console.warn(`未知重量调整类型: ${type}`);
+      }
+  
+      console.log(`已${intent.startsWith("增加") ? "增加" : "减少"}${weightValue}克 ${type}`);
+    } else {
+      console.warn("未提供重量参数。");
+    }
+  };
   
   const messagesEndRef = useRef(null);
 
@@ -501,6 +697,16 @@ const Group2 = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const navigate = useNavigate();
+  const handleEvaluate = (e) => {
+    e.preventDefault();
+    navigate("/evaluate");
+  }
+  const handleAdjust = (e) => {
+    e.preventDefault();
+    navigate("/planning");
+  }
+
   return (
     <div className="my-container2">
       <div className="flex-row justify-end page">
@@ -528,9 +734,9 @@ const Group2 = () => {
         </div>
       </div>
       <div className="page2">
-        <img src={adjustIcon} className="image2" alt="" />
+        <img src={adjustIcon} className="image2" alt="" onClick={handleAdjust}/>
         <img src={assistIcon} className="image3" alt="" />
-        <img src={evaluateIcon} className="image4" alt="" />
+        <img src={evaluateIcon} className="image4" alt="" onClick={handleEvaluate}/>
         <img src={finishIcon} className="image5" alt="" />
         <img src={helpIcon} className="image6" alt="" />
       </div>
@@ -587,7 +793,7 @@ const Group2 = () => {
               />
             </div>
             <div className="numbers">
-              <span className="large" id="largeNumber">
+              <span className="large" id="largeNumber" readOnly>
                 {items[currentItem].largeNumber}
               </span>
               <span className="small" id="smallNumber">
@@ -775,7 +981,7 @@ const Group2 = () => {
               }}
             >
               <button
-                className="timer-button"
+                className="timer-button-de"
                 onClick={handleDecrease}
                 disabled={isCounting}
               >
@@ -783,7 +989,7 @@ const Group2 = () => {
               </button>
               <div className="time-display">{formatTime()}</div>
               <button
-                className="timer-button"
+                className="timer-button-in"
                 onClick={handleIncrease}
                 disabled={isCounting}
               >

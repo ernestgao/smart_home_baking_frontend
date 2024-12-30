@@ -473,8 +473,21 @@
         color: #2c3e50;
     }
     
-    .timer-button {
-        position: absolute;
+    .timer-button-in {
+        position: relative;
+        background-color: #FFC300;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 1.5rem;
+        color: white;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .timer-button-de {
+        position: relative;
         background-color: #FFC300;
         border: none;
         border-radius: 50%;
