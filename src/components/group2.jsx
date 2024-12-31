@@ -400,24 +400,31 @@ const Group2 = () => {
         if (result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
           const recognizedText = result.text.trim();
           console.log(`Recognized Text: ${recognizedText}`);
+
+          // Convert Chinese numerals to Arabic numbers
+        const convertedText = recognizedText.replace(/[一两二三四五六七八九十百千]+/g, (match) =>
+          chineseToArabic(match)
+        );
+        console.log(`Converted Text: ${convertedText}`);
   
-          if (recognizedText) {
+          if (convertedText) {
             try {
-              console.log(`Sending recognized text to backend: ${recognizedText}`);
+              console.log(`Sending recognized text to backend: ${convertedText}`);
               const response = await fetch(`${url}/voice-command`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: recognizedText }),
+                body: JSON.stringify({ message: convertedText }),
               });
               const data = await response.json();
+              console.log(data);
               setMessages((prevMessages) => [
                 ...prevMessages,
-                { type: "user", text: recognizedText },
+                { type: "user", text: convertedText },
                 { type: "bot", text: data.messages || "No response received." },
               ]);
 
-              if (data.commands && data.commands.length > 0) {
-                data.commands.forEach(handleCommands);
+              if (data.commands) {
+                handleCommands(data.commands.command, data.commands.parameters);
               }
             } catch (error) {
               console.error("Failed to send recognized text to backend:", error);
@@ -453,10 +460,65 @@ const Group2 = () => {
     );
   }
 
+  const chineseToArabic = (text) => {
+    const map = {
+      零: 0,
+      一: 1,
+      两: 2,
+      二: 2,
+      三: 3,
+      四: 4,
+      五: 5,
+      六: 6,
+      七: 7,
+      八: 8,
+      九: 9,
+      十: 10,
+      百: 100,
+      千: 1000,
+    };
+  
+    if (!text) return null;
+  
+    let result = 0;
+    let temp = 0; // Temp variable to hold the value of the current number segment
+    let multiplier = 1; // To handle cases like 百, 千
+  
+    for (const char of text) {
+      if (map[char] !== undefined) {
+        const value = map[char];
+  
+        if (value === 10 || value === 100 || value === 1000) {
+          if (temp === 0) temp = 1; // Handle cases like 十 (10), 百 (100)
+          multiplier = value;
+          result += temp * multiplier;
+          temp = 0; // Reset temp for the next segment
+          multiplier = 1; // Reset multiplier
+        } else {
+          temp = temp * 10 + value; // For sequential digits like 一二三 -> 123
+        }
+      } else {
+        console.warn(`Invalid character: ${char}`);
+      }
+    }
+  
+    result += temp; // Add any remaining value in temp
+    return result;
+  };
+  
   const handleCommands = (intent, parameters = {}) => {
     console.log("处理意图:", intent, "参数:", parameters);
   
     switch (intent) {
+
+      case "跳转第一个页面":
+        navigate("/planning");
+        break;
+  
+      case "跳转第三个页面":
+        navigate("/evaluate");
+        break;
+
       case "设置时长":
         // 设置计时器时长
         const { time } = parameters;
@@ -516,32 +578,26 @@ const Group2 = () => {
   
       case "去皮":
         // TODO: 调秤
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
+        
         // console.log("秤已归零");
         break;
   
-      case "跳转第一个页面":
-        navigate("/planning");
-        break;
-  
-      case "跳转第三个页面":
-        navigate("/evaluate");
-        break;
-  
       case "回到上一步":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         changeText(-1); // 回到上一步
         break;
   
       case "回到下一步":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         changeText(1); // 回到下一步
         break;
   
       case "步骤跳转":
         const { step } = parameters;
         if (step) {
-          setActiveTab("foodscale");
+          setActiveTab("foodScale");
+          
           setCurrentText(parseInt(step, 10) - 1); // 跳转到指定步骤
           console.log(`跳转到步骤 ${step}`);
         } else {
@@ -551,66 +607,67 @@ const Group2 = () => {
   
       case "称量低筋面粉":
         saveActual();
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         setCurrentItem(3);
         console.log("记录低筋面粉的重量");
         break;
   
       case "增加低筋面粉":
       case "减少低筋面粉":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         adjustWeight("flour", intent, parameters);
         break;
   
       case "称量黄油":
         saveActual();
-        setActiveTab("foodscale");
+        console.log(activeTab);
+        setActiveTab("foodScale");
         setCurrentItem(0);
         console.log("记录黄油的重量");
         break;
   
       case "增加黄油":
       case "减少黄油":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         adjustWeight("butter", intent, parameters);
         break;
   
       case "称量白砂糖":
         saveActual();
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         setCurrentItem(1);
         console.log("记录白砂糖的重量");
         break;
   
       case "增加白砂糖":
       case "减少白砂糖":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         adjustWeight("sugar", intent, parameters);
         break;
   
       case "称量蛋白液":
         saveActual();
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         setCurrentItem(2);
         console.log("记录蛋白液的重量");
         break;
   
       case "增加蛋白液":
       case "减少蛋白液":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         adjustWeight("liquid", intent, parameters);
         break;
   
       case "称量蔓越莓干":
         saveActual();
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         setCurrentItem(4);
         console.log("记录蔓越莓干的重量");
         break;
   
       case "增加蔓越莓干":
       case "减少蔓越莓干":
-        setActiveTab("foodscale");
+        setActiveTab("foodScale");
         adjustWeight("berry", intent, parameters);
         break;
   
@@ -618,6 +675,10 @@ const Group2 = () => {
         console.warn(`收到未知意图: ${intent}`);
     }
   };
+
+  useEffect(() => {
+    console.log("activeTab changed to:", activeTab);
+  }, [activeTab]);
   
   // Helper function to adjust weights
   const adjustWeight = (type, intent, parameters) => {
@@ -698,13 +759,42 @@ const Group2 = () => {
   }, [messages]);
 
   const navigate = useNavigate();
-  const handleEvaluate = (e) => {
+  const handleEvaluate = async (e) => {
     e.preventDefault();
+    await uploadActualAmount();
     navigate("/evaluate");
   }
   const handleAdjust = (e) => {
     e.preventDefault();
     navigate("/planning");
+  }
+
+  const uploadActualAmount = async () => {
+    const actualAmounts = {
+      oil: actualOil,
+      flour: actualFlour,
+      sugar: actualSugar,
+      liquid: actualLiquid,
+      berry: actualBerry,
+    };
+
+    try {
+      const response = await fetch(`${url}/save-actual`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid: uid.current,
+          actualAmounts,
+        }),
+      });
+  
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error("Error saving state:", error);
+    }
   }
 
   return (
@@ -737,7 +827,7 @@ const Group2 = () => {
         <img src={adjustIcon} className="image2" alt="" onClick={handleAdjust}/>
         <img src={assistIcon} className="image3" alt="" />
         <img src={evaluateIcon} className="image4" alt="" onClick={handleEvaluate}/>
-        <img src={finishIcon} className="image5" alt="" />
+        <img src={finishIcon} className="image5" alt="" onClick={handleEvaluate}/>
         <img src={helpIcon} className="image6" alt="" />
       </div>
 

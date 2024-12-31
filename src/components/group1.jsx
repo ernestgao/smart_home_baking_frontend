@@ -242,7 +242,7 @@ const Group1 = () => {
               alt=""
               onClick={handleEvaluate}
             />
-            <img className="image6" src={finishIcon} alt="" />
+            <img className="image6" src={finishIcon} alt="" onClick={handleAssist}/>
             <img className="image7" src={helpIcon} alt="" />
             <button
               className="image8"

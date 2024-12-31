@@ -277,7 +277,7 @@ const canvasRef = useRef(null);
                       type="number"
                       id="quantity1"
                       className="value"
-                      value="110"
+                      value={inputOil}
                       onChange={handleOilChange}
                     />
                     <button
@@ -304,7 +304,7 @@ const canvasRef = useRef(null);
                       type="number"
                       id="quantity2"
                       className="value"
-                      value="80"
+                      value={inputSugar}
                       onChange={handleSugarChange}
                     />
                     <button
@@ -401,7 +401,7 @@ const canvasRef = useRef(null);
               <span className="mt-24 self-start font_2 text_21">总计</span>
               <div className="total">
                 <span id="sum" className="text_34">
-                  455
+                  {sum}
                 </span>
               </div>
             </div>
