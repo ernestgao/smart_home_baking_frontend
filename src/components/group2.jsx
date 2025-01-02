@@ -10,6 +10,7 @@ import helpIcon from "../assets/group2/帮助.png";
 import robot from "../assets/group2/机器人.png";
 import ButtonImage from "../assets/group2/button.png";
 import RobotImage from "../assets/group2/robot.png";
+import UserImage from "../assets/group2/user.png"
 import BubbleIcon from "../assets/group2/bubble.png";
 import butterImage from "../assets/group2/黄油.png";
 import sugarImage from "../assets/group2/细砂糖.png";
@@ -1210,6 +1211,14 @@ const Group2 = () => {
             <img
               src={RobotImage}
               alt="Bot Avatar"
+              className="small-avatar"
+            />
+          )}
+
+          {message.type === "user" && (
+            <img
+              src={UserImage}
+              alt="User Avatar"
               className="small-avatar"
             />
           )}
