@@ -45,6 +45,7 @@ const Group2 = () => {
   const [flour, setFlour] = useState(0);
   const [berry, setBerry] = useState(0);
   const sum = oil + sugar + liquid + flour + berry;
+  let hasYummySpokenFirst = false;
   // initialization
   useEffect(() => {
     const apiUrl = url + "/display";
@@ -71,6 +72,13 @@ const Group2 = () => {
     };
 
     fetchData();
+
+    if (!hasYummySpokenFirst) {
+      speakWithAzure(
+        "您好，我是您的烘焙助手Yummy，您可以随时呼唤“Yummy”，向我提问，和我聊一聊您烘焙遇到的问题，我会向您提供文字、语音、图片、视频等提示。我也可以帮助您在双手占用的情况下进行一些简单的界面操作。让我们一起开始吧！"
+      );
+      hasYummySpokenFirst = true;
+    }
 
     return () => {
       if (recognizerRef.current && !recognizerState.current.disposed) {
@@ -184,6 +192,7 @@ const Group2 = () => {
   const [isCounting, setIsCounting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(time * 60);
+  const timerTriggeredRef = useRef(false);
 
   // const [scalevalue, setScaleValue] = useState(0);
   
@@ -236,17 +245,25 @@ const Group2 = () => {
     if (isCounting && !isPaused) {
       countdown = setInterval(() => {
         setSecondsLeft((prevSeconds) => {
-          if (prevSeconds > 0) {
+          if (prevSeconds > 1) {
             return prevSeconds - 1;
           } else {
-            clearInterval(countdown);
-            setIsCounting(false);
-            alert("Time's up!");
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              { type: "bot", text: "您好，计时时间到了。" },
-            ]);
-            return prevSeconds;
+            // Trigger timer completion only once
+            if (!timerTriggeredRef.current) {
+              timerTriggeredRef.current = true; // Set the guard
+              clearInterval(countdown); // Clear the interval
+              setIsCounting(false);
+
+              // Add the bot message
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { type: "bot", text: "您好，计时时间到了。", mediaType: null, mediaUrl: null },
+              ]);
+
+              // Trigger Azure speech
+              speakWithAzure("您好，计时时间到了。");
+            }
+            return 0; // Ensure timer stops at 0
           }
         });
       }, 1000);
@@ -254,6 +271,12 @@ const Group2 = () => {
 
     return () => clearInterval(countdown);
   }, [isCounting, isPaused]);
+
+  useEffect(() => {
+    if (!isCounting) {
+      timerTriggeredRef.current = false;
+    }
+  }, [isCounting]);
 
   const formatTime = () => {
     const minutes = Math.floor(secondsLeft / 60);
@@ -302,6 +325,7 @@ const Group2 = () => {
       await ensureAudioContext();
       setAudioContextInitialized(true);
       console.log("AudioContext initialized manually.");
+      speakWithAzure("您好，需要我时请呼唤“Yummy")
       startListeningForKeyword();
     } catch (error) {
       console.error("Failed to initialize AudioContext manually:", error);
@@ -310,7 +334,7 @@ const Group2 = () => {
   };
 
   const [messages, setMessages] = useState([
-    { type: "bot", text: "您好，需要我时请呼唤“Yummy（呀咪）" },
+    { type: "bot", text: "您好，需要我时请呼唤\"Yummy（呀咪）\"", mediaUrl: null, mediaType: null },
   ]);
   // const [input, setInput] = useState("");
   // const [isListeningKey, setIsListeningKey] = useState(false);
@@ -320,6 +344,33 @@ const Group2 = () => {
   const recognizerState = useRef({ disposed: false });
   const keyword = "yummy"; // Define the keyword
 
+  const speakWithAzure = (text) => {
+    const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
+      process.env.REACT_APP_SPEECH_KEY, // Azure Speech API key
+      process.env.REACT_APP_SPEECH_REGION // Azure Speech region
+    );
+    speechConfig.speechSynthesisLanguage = "zh-CN"; // Set the language
+    speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoxiaoNeural"; // Set the voice
+  
+    const audioConfig = SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
+    const synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig, audioConfig);
+  
+    synthesizer.speakTextAsync(
+      text,
+      (result) => {
+        if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+          console.log("Speech synthesis completed.");
+        } else {
+          console.error("Speech synthesis failed.", result.errorDetails);
+        }
+        synthesizer.close();
+      },
+      (error) => {
+        console.error("Speech synthesis error:", error);
+        synthesizer.close();
+      }
+    );
+  };
 
   const initializeRecognizer = (speechConfig, audioConfig) => {
     if (recognizerRef.current != null) {
@@ -402,10 +453,8 @@ const Group2 = () => {
           console.log(`Recognized Text: ${recognizedText}`);
 
           // Convert Chinese numerals to Arabic numbers
-        const convertedText = recognizedText.replace(/[一两二三四五六七八九十百千]+/g, (match) =>
-          chineseToArabic(match)
-        );
-        console.log(`Converted Text: ${convertedText}`);
+          const convertedText = replaceChineseNumbers(recognizedText);
+          console.log(`Converted Text: ${convertedText}`);
   
           if (convertedText) {
             try {
@@ -419,9 +468,14 @@ const Group2 = () => {
               console.log(data);
               setMessages((prevMessages) => [
                 ...prevMessages,
-                { type: "user", text: convertedText },
-                { type: "bot", text: data.messages || "No response received." },
+                { type: "user", text: recognizedText },
+                { type: "bot", 
+                  text: data.messages || "抱歉我无法回答", 
+                  mediaUrl: data.mediaUrl || null, 
+                  mediaType: data.mediaType || null },
               ]);
+
+              speakWithAzure(data.messages || "抱歉我无法回答");
 
               if (data.commands) {
                 handleCommands(data.commands.command, data.commands.parameters);
@@ -430,7 +484,7 @@ const Group2 = () => {
               console.error("Failed to send recognized text to backend:", error);
               setMessages((prevMessages) => [
                 ...prevMessages,
-                { type: "bot", text: "Sorry, unable to connect to the server." },
+                { type: "bot", text: "Sorry, unable to connect to the server.", mediaUrl: null, mediaType: null },
               ]);
             }
           } else {
@@ -460,7 +514,7 @@ const Group2 = () => {
     );
   }
 
-  const chineseToArabic = (text) => {
+  const replaceChineseNumbers = (text) => {
     const map = {
       零: 0,
       一: 1,
@@ -478,33 +532,36 @@ const Group2 = () => {
       千: 1000,
     };
   
-    if (!text) return null;
+    const regex = /([一两二三四五六七八九十百千]+)(克|分钟|步)/g;
   
-    let result = 0;
-    let temp = 0; // Temp variable to hold the value of the current number segment
-    let multiplier = 1; // To handle cases like 百, 千
+    return text.replace(regex, (match, p1, p2) => {
+      let result = 0;
+      let temp = 0;
+      let multiplier = 1;
   
-    for (const char of text) {
-      if (map[char] !== undefined) {
-        const value = map[char];
+      for (const char of p1) {
+        if (map[char] !== undefined) {
+          const value = map[char];
   
-        if (value === 10 || value === 100 || value === 1000) {
-          if (temp === 0) temp = 1; // Handle cases like 十 (10), 百 (100)
-          multiplier = value;
-          result += temp * multiplier;
-          temp = 0; // Reset temp for the next segment
-          multiplier = 1; // Reset multiplier
+          if (value === 10 || value === 100 || value === 1000) {
+            if (temp === 0) temp = 1; // Handle cases like 十 (10), 百 (100)
+            multiplier = value;
+            result += temp * multiplier;
+            temp = 0; // Reset temp for the next segment
+            multiplier = 1; // Reset multiplier
+          } else {
+            temp = temp * 10 + value; // For sequential digits like 一二三 -> 123
+          }
         } else {
-          temp = temp * 10 + value; // For sequential digits like 一二三 -> 123
+          console.warn(`Invalid character: ${char}`);
         }
-      } else {
-        console.warn(`Invalid character: ${char}`);
       }
-    }
   
-    result += temp; // Add any remaining value in temp
-    return result;
+      result += temp; // Add any remaining value in temp
+      return result + p2; // Append the unit (200克 or 30分钟)
+    });
   };
+  
   
   const handleCommands = (intent, parameters = {}) => {
     console.log("处理意图:", intent, "参数:", parameters);
@@ -1113,7 +1170,7 @@ const Group2 = () => {
           您好，我是您的烘焙助手“Yummy（呀咪）”。<br></br>
           您可以随时呼唤“Yummy”，向我提问，和我聊一聊您烘焙遇到的问题，我会向您提供文字、语音、图片、视频等提示。我也可以帮助您在双手占用的情况下进行一些简单的界面操作。
           <br></br>
-          我们一起开始吧！（确认请说：你好，Yummy）
+          让我们一起开始吧！（确认请点击下方图标）
           <img
           src={robot}
           alt="Assistant"
@@ -1143,21 +1200,40 @@ const Group2 = () => {
       </div>
       <div className="chat-body">
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`chat-message ${
-              message.type === "bot" ? "bot-message" : "user-message"
-            }`}
-          >
-            {message.type === "bot" && (
+        <div
+          key={index}
+          className={`chat-message ${
+            message.type === "bot" ? "bot-message" : "user-message"
+          }`}
+        >
+          {message.type === "bot" && (
+            <img
+              src={RobotImage}
+              alt="Bot Avatar"
+              className="small-avatar"
+            />
+          )}
+          <span>{message.text}</span>
+        
+          {/* Render media if present */}
+          {message.mediaUrl && (
+            message.mediaType === "image" ? (
               <img
-                src={RobotImage}
-                alt="Bot Avatar"
-                className="small-avatar"
+                src={message.mediaUrl}
+                alt="Media Content"
+                style={{ maxWidth: "100%", borderRadius: "8px", marginTop:"8px" }}
               />
-            )}
-            <span>{message.text}</span>
-          </div>
+            ) : message.mediaType === "video" ? (
+              <video
+                controls
+                style={{ maxWidth: "100%", borderRadius: "8px", marginTop:"8px" }}
+              >
+                <source src={message.mediaUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : null
+          )}
+        </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
